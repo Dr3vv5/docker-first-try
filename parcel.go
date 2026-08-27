@@ -9,6 +9,20 @@ type ParcelStore struct {
 }
 
 func NewParcelStore(db *sql.DB) ParcelStore {
+	_, err := db.Exec(`
+        CREATE TABLE IF NOT EXISTS parcel (
+            number INTEGER PRIMARY KEY AUTOINCREMENT,
+            client INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            address TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+    `)
+	if err != nil {
+		// Важно: если создание таблицы упало, лучше панировать сразу,
+		// чтобы не мучить код дальше
+		panic(err)
+	}
 	return ParcelStore{db: db}
 }
 
